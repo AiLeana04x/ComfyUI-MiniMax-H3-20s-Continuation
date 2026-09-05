@@ -1,0 +1,567 @@
+{
+  "114": {
+    "inputs": {
+      "image": "example_input.png"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Загрузить изображение"
+    }
+  },
+  "197": {
+    "inputs": {
+      "filename_prefix": "video/MiniMax_H3",
+      "format": "auto",
+      "codec": "auto",
+      "video": [
+        "198:195",
+        0
+      ]
+    },
+    "class_type": "SaveVideo",
+    "_meta": {
+      "title": "Сохранить видео"
+    }
+  },
+  "178:119": {
+    "inputs": {
+      "upscale_method": "nearest-exact",
+      "megapixels": 0.4,
+      "resolution_steps": 32,
+      "image": [
+        "114",
+        0
+      ]
+    },
+    "class_type": "ImageScaleToTotalPixels",
+    "_meta": {
+      "title": "Масштабировать изображение до общего количества пикселей"
+    }
+  },
+  "178:120": {
+    "inputs": {
+      "image": [
+        "178:119",
+        0
+      ]
+    },
+    "class_type": "GetImageSize",
+    "_meta": {
+      "title": "Получить размер изображения"
+    }
+  },
+  "105:11": {
+    "inputs": {
+      "vae_name": "minimax_h3_video_vae_int8_convrot.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Загрузить VAE"
+    }
+  },
+  "105:24": {
+    "inputs": {
+      "vae_name": "minimax_h3_audio_vae_fp32.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Загрузить VAE"
+    }
+  },
+  "105:23": {
+    "inputs": {
+      "samples": [
+        "105:14",
+        0
+      ],
+      "vae": [
+        "105:24",
+        0
+      ]
+    },
+    "class_type": "VAEDecodeAudio",
+    "_meta": {
+      "title": "Декодировать аудио VAE"
+    }
+  },
+  "105:10": {
+    "inputs": {
+      "samples": [
+        "105:14",
+        0
+      ],
+      "vae": [
+        "105:11",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Декодировать VAE"
+    }
+  },
+  "105:9": {
+    "inputs": {
+      "scheduler": "simple",
+      "steps": 4,
+      "denoise": 1,
+      "model": [
+        "105:200",
+        0
+      ]
+    },
+    "class_type": "BasicScheduler",
+    "_meta": {
+      "title": "Основной scheduler"
+    }
+  },
+  "105:14": {
+    "inputs": {
+      "noise": [
+        "105:15",
+        0
+      ],
+      "guider": [
+        "105:16",
+        0
+      ],
+      "sampler": [
+        "105:163",
+        0
+      ],
+      "sigmas": [
+        "105:9",
+        0
+      ],
+      "latent_image": [
+        "105:104",
+        1
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "Пользовательский сэмплер (Расширенный)"
+    }
+  },
+  "105:16": {
+    "inputs": {
+      "model": [
+        "105:200",
+        0
+      ],
+      "conditioning": [
+        "105:104",
+        0
+      ]
+    },
+    "class_type": "BasicGuider",
+    "_meta": {
+      "title": "Основной гид"
+    }
+  },
+  "105:6": {
+    "inputs": {
+      "unet_name": "minimax_h3_fused_refdelta_r1024_turbo8_mystic07_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Загрузить модель диффузии"
+    }
+  },
+  "105:13": {
+    "inputs": {
+      "clip_name": "qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors",
+      "type": "minimax",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "Загрузить CLIP"
+    }
+  },
+  "105:15": {
+    "inputs": {
+      "noise_seed": 378792448714436
+    },
+    "class_type": "RandomNoise",
+    "_meta": {
+      "title": "Случайный шум"
+    }
+  },
+  "105:104": {
+    "inputs": {
+      "prompt": "Cinematic realistic video, smooth natural motion, seamless continuation between both parts, consistent character identity, consistent red coat, elegant old hotel atmosphere, detailed brass elevator interior, soft atmospheric lighting, gentle camera movement, clean composition, realistic pacing. Keep the same main character, clothing, facial appearance, environment details and visual style throughout the sequence.\n\nA young woman in a stylish red coat walks through the grand lobby of an elegant old hotel at night. Warm golden lights reflect on the polished floor, and the atmosphere feels quiet, luxurious, and slightly mysterious. The camera follows her smoothly from a medium distance as she approaches a vintage brass elevator with ornate doors. The elevator opens and she steps inside. The camera moves into the elevator with her. Inside, she turns to face the camera naturally. Her face remains clearly visible and recognizable while the warm elevator lights illuminate her features and red coat. She briefly looks toward the elevator doors and then back toward the camera as the elevator begins to move.",
+      "width": [
+        "178:120",
+        0
+      ],
+      "height": [
+        "178:120",
+        1
+      ],
+      "length": [
+        "105:107",
+        1
+      ],
+      "clip": [
+        "105:201",
+        1
+      ],
+      "vae": [
+        "105:11",
+        0
+      ],
+      "first_frame": [
+        "114",
+        0
+      ]
+    },
+    "class_type": "MiniMaxH3ImageToVideo",
+    "_meta": {
+      "title": "MiniMax H3 Image to Video"
+    }
+  },
+  "105:107": {
+    "inputs": {
+      "expression": "max(5, round(a * 24)) + (5 - (max(5, round(a * 24)) % 17)) % 17",
+      "values.a": [
+        "105:111",
+        0
+      ]
+    },
+    "class_type": "ComfyMathExpression",
+    "_meta": {
+      "title": "Математическое выражение"
+    }
+  },
+  "105:111": {
+    "inputs": {
+      "value": 10
+    },
+    "class_type": "PrimitiveFloat",
+    "_meta": {
+      "title": "Float (duration)"
+    }
+  },
+  "105:163": {
+    "inputs": {
+      "sampler_name": "res_multistep"
+    },
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "Выбор KSampler"
+    }
+  },
+  "105:200": {
+    "inputs": {
+      "sparsity_ratio": 0.85,
+      "block_size": "32",
+      "min_seq_len": 8192,
+      "dense_last_steps": 1,
+      "protect_audio": true,
+      "enabled": true,
+      "dense_steps": "0",
+      "dense_backend": "comfy_kitchen",
+      "disable_fp16_accum": true,
+      "stabilize_motion": false,
+      "reference_protection": "Off",
+      "model": [
+        "105:201",
+        0
+      ]
+    },
+    "class_type": "H3SLAAttention",
+    "_meta": {
+      "title": "H3 SLA Attention"
+    }
+  },
+  "105:201": {
+    "inputs": {
+      "mode": "minimax",
+      "stack_data": "[]",
+      "lora_ui": "",
+      "model": [
+        "105:6",
+        0
+      ],
+      "clip": [
+        "105:13",
+        0
+      ]
+    },
+    "class_type": "LTX_lora_loader",
+    "_meta": {
+      "title": "LoRA Loader Stack ( LTX / MiniMax H3 Compatible )"
+    }
+  },
+  "198:192": {
+    "inputs": {
+      "expression": "a - 1",
+      "values.a": [
+        "105:107",
+        1
+      ]
+    },
+    "class_type": "ComfyMathExpression",
+    "_meta": {
+      "title": "Математическое выражение"
+    }
+  },
+  "198:191": {
+    "inputs": {
+      "batch_index": [
+        "198:192",
+        1
+      ],
+      "length": 1,
+      "image": [
+        "105:10",
+        0
+      ]
+    },
+    "class_type": "ImageFromBatch",
+    "_meta": {
+      "title": "Изображение из партии"
+    }
+  },
+  "198:183": {
+    "inputs": {
+      "prompt": "Cinematic realistic video, smooth natural motion, seamless continuation between both parts, consistent character identity, consistent red coat, elegant old hotel atmosphere, detailed brass elevator interior, soft atmospheric lighting, gentle camera movement, clean composition, realistic pacing. Keep the same main character, clothing, facial appearance, environment details and visual style throughout the sequence.\n\nContinue seamlessly from the same moment inside the same elevator. The young woman remains clearly visible in front of the camera, with the same recognizable face and unchanged red coat. The lighting inside the elevator gradually becomes brighter and more ethereal. She turns toward the elevator doors as they slowly open. Beyond the doors is no longer the hotel, but a breathtaking fantasy landscape high above the clouds: a vast sunlit valley, floating rock formations, long waterfalls, soft mist, and a distant shining city. She reacts with quiet surprise and a faint smile, then walks out of the elevator. The camera follows her forward and slightly upward, revealing the scale of the landscape as golden morning light fills the frame.",
+      "width": [
+        "178:120",
+        0
+      ],
+      "height": [
+        "178:120",
+        1
+      ],
+      "length": [
+        "105:107",
+        1
+      ],
+      "clip": [
+        "105:201",
+        1
+      ],
+      "vae": [
+        "105:11",
+        0
+      ],
+      "first_frame": [
+        "198:191",
+        0
+      ]
+    },
+    "class_type": "MiniMaxH3ImageToVideo",
+    "_meta": {
+      "title": "MiniMax H3 Image to Video"
+    }
+  },
+  "198:187": {
+    "inputs": {
+      "noise_seed": 1123309251542696
+    },
+    "class_type": "RandomNoise",
+    "_meta": {
+      "title": "Случайный шум"
+    }
+  },
+  "198:184": {
+    "inputs": {
+      "model": [
+        "105:200",
+        0
+      ],
+      "conditioning": [
+        "198:183",
+        0
+      ]
+    },
+    "class_type": "BasicGuider",
+    "_meta": {
+      "title": "Основной гид"
+    }
+  },
+  "198:185": {
+    "inputs": {
+      "sampler_name": "res_multistep"
+    },
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "Выбор KSampler"
+    }
+  },
+  "198:186": {
+    "inputs": {
+      "scheduler": "simple",
+      "steps": 4,
+      "denoise": 1,
+      "model": [
+        "105:200",
+        0
+      ]
+    },
+    "class_type": "BasicScheduler",
+    "_meta": {
+      "title": "Основной scheduler"
+    }
+  },
+  "198:188": {
+    "inputs": {
+      "noise": [
+        "198:187",
+        0
+      ],
+      "guider": [
+        "198:184",
+        0
+      ],
+      "sampler": [
+        "198:185",
+        0
+      ],
+      "sigmas": [
+        "198:186",
+        0
+      ],
+      "latent_image": [
+        "198:183",
+        1
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "Пользовательский сэмплер (Расширенный)"
+    }
+  },
+  "198:189": {
+    "inputs": {
+      "samples": [
+        "198:188",
+        0
+      ],
+      "vae": [
+        "105:11",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Декодировать VAE"
+    }
+  },
+  "198:190": {
+    "inputs": {
+      "samples": [
+        "198:188",
+        0
+      ],
+      "vae": [
+        "105:24",
+        0
+      ]
+    },
+    "class_type": "VAEDecodeAudio",
+    "_meta": {
+      "title": "Декодировать аудио VAE"
+    }
+  },
+  "198:194": {
+    "inputs": {
+      "images.image0": [
+        "105:10",
+        0
+      ],
+      "images.image1": [
+        "198:189",
+        0
+      ]
+    },
+    "class_type": "BatchImagesNode",
+    "_meta": {
+      "title": "Пакет изображений"
+    }
+  },
+  "198:196:128:15": {
+    "inputs": {
+      "upscale_model": [
+        "198:196:138",
+        0
+      ],
+      "image": [
+        "198:196:159",
+        0
+      ]
+    },
+    "class_type": "ImageUpscaleWithModel",
+    "_meta": {
+      "title": "Апскейл изображения (с использованием модели)"
+    }
+  },
+  "198:196:138": {
+    "inputs": {
+      "model_name": "2x_OpenProteus_Compact_i2_70K.pth"
+    },
+    "class_type": "UpscaleModelLoader",
+    "_meta": {
+      "title": "Загрузить модель апскейла"
+    }
+  },
+  "198:196:159": {
+    "inputs": {
+      "value": [
+        "198:194",
+        0
+      ]
+    },
+    "class_type": "UnloadAllModels",
+    "_meta": {
+      "title": "UnloadAllModels"
+    }
+  },
+  "198:195": {
+    "inputs": {
+      "fps": 24,
+      "bit_depth": 8,
+      "images": [
+        "198:196:128:15",
+        0
+      ],
+      "audio": [
+        "198:199",
+        0
+      ]
+    },
+    "class_type": "CreateVideo",
+    "_meta": {
+      "title": "Создать видео"
+    }
+  },
+  "198:199": {
+    "inputs": {
+      "direction": "after",
+      "audio1": [
+        "105:23",
+        0
+      ],
+      "audio2": [
+        "198:190",
+        0
+      ]
+    },
+    "class_type": "AudioConcat",
+    "_meta": {
+      "title": "Аудио - Конкатенация"
+    }
+  },
+  "900": {
+    "inputs": {
+      "value": "Model Links / Download Notes\n\nPlace the files in the matching ComfyUI model folders used by your setup.\n\nDiffusion model:\n- minimax_h3_fused_refdelta_r1024_turbo8_mystic07_int8_convrot.safetensors\n  https://huggingface.co/MATLOWAI/minimax-h3-fused-turbo-int8-convrot/resolve/main/diffusion_models/minimax_h3_fused_refdelta_r1024_turbo8_mystic07_int8_convrot.safetensors\n\nVideo VAE:\n- minimax_h3_video_vae_int8_convrot.safetensors\n  https://huggingface.co/Kijai/MiniMax-H3-experimental/resolve/main/minimax_h3_video_vae_int8_convrot.safetensors\n\nAudio VAE:\n- minimax_h3_audio_vae_fp32.safetensors\n  https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_audio_vae_fp32.safetensors\n\nText encoder / CLIP:\n- qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors\n  https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors\n\nUpscale model:\n- 2x_OpenProteus_Compact_i2_70K.pth\n  https://huggingface.co/hfmaster/models-moved/resolve/main/upscalers/2x_OpenProteus_Compact_i2_70K.pth\n\nNo LoRA files are enabled in this public workflow."
+    },
+    "class_type": "PrimitiveStringMultiline",
+    "_meta": {
+      "title": "Model Links / Download Notes"
+    }
+  }
+}

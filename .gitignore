@@ -1,0 +1,21 @@
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+
+# Generated media and local test outputs
+output/
+outputs/
+input/
+temp/
+*.mp4
+*.mov
+*.webm
+*.png
+*.jpg
+*.jpeg
+
+# Local secrets/config
+.env
+*.env
+sessions.env
